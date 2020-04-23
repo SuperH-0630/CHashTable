@@ -85,7 +85,7 @@ HashNode *find_node(HashTable *ht, char *key){
     }
     else{
         while(1){
-            if(strcmp(base_node->key, key)){  // 比较字符串的值，不可以直接使用 == [char *是指针，==只是比较俩字符串的指针是否一致]
+            if(!strcmp(base_node->key, key)){  // 比较字符串的值，不可以直接使用 == [char *是指针，==只是比较俩字符串的指针是否一致]
                 return base_node;
             }
             else if(base_node->next == NULL){  // 迭代找到最后一个节点，依然没有节点
