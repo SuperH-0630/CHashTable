@@ -31,6 +31,7 @@ HashNode *make_HashNode(char *key, char *value){  // 生成并初始化
     return tmp;
 }
 
+// 使用time33算法，把key换算成为索引，生成索引的范围在0-MAX_SIZE上[因为有 % MAX_SIZE]
 unsigned int time33(char *key){
     unsigned int hash = 5381;
     while(*key){
@@ -39,7 +40,9 @@ unsigned int time33(char *key){
     return (hash & 0x7FFFFFFF) % MAX_SIZE;
 }
 
+// 添加一个桶
 int login_node(HashTable *ht, HashNode *hn){
+    // 检查数据是否合法
     if(hn == NULL){
         return 1;
     }
@@ -47,41 +50,45 @@ int login_node(HashTable *ht, HashNode *hn){
         return 1;
     }
 
+    // 计算下标
     unsigned int index = time33(hn->key);
     HashNode *base_node = ht->HashNode[index];  // 根据下标拿base节点
 
     if(base_node == NULL){
-        ht->HashNode[index] = hn;
+        ht->HashNode[index] = hn;  // 无冲突
     }
     else{
+        // 有冲突
         while(1){
             if(base_node->next == NULL){  // 迭代找到最后一个节点
                 break;
             }
-            base_node = base_node->next;
+            base_node = base_node->next;  // 迭代
         }
-        base_node->next = hn;
+        base_node->next = hn;  // 给链表赋值
     }
     return 0;
 }
 
 HashNode *find_node(HashTable *ht, char *key){
+    // 检查数据是否合法
     if(ht == NULL){
         return NULL;
     }
 
+    // 计算索引
     unsigned int index = time33(key);
     HashNode *base_node = ht->HashNode[index];  // 根据下标拿base节点
 
     if(base_node == NULL){  // 没有节点
-        return NULL;
+        return NULL;  // 返回NULL表示无数据
     }
     else{
         while(1){
-            if(base_node->key == key){  // 找到节点
+            if(strcmp(base_node->key, key)){  // 比较字符串的值，不可以直接使用 == [char *是指针，==只是比较俩字符串的指针是否一致]
                 return base_node;
             }
-            else if(base_node->next == NULL){  // 迭代找到最后一个节点->没有节点
+            else if(base_node->next == NULL){  // 迭代找到最后一个节点，依然没有节点
                 return NULL;
             }
             base_node = base_node->next;
