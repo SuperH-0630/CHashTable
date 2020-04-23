@@ -2,11 +2,11 @@
 
 unsigned int time33(char *);
 int main(){
-    char str[] = "2";
+    char str[] = "1";
     int res;
     
     res = time33(str);
-    printf("%d\n", res);
+    printf("%d\n", res % (1024 ^ 2));
 }
 
 unsigned int time33(char *str){
